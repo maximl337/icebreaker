@@ -27,5 +27,8 @@ Route::get('/', function () {
 */
 
 Route::group(['middleware' => ['web']], function () {
-    // home page
+   	
+   	Route::get('demo', 'PagesController@demo');
+
+   	Route::post('fullcontact', 'icebreakerController@fullcontact');
 });
