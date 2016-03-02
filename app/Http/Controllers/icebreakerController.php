@@ -21,19 +21,60 @@ class icebreakerController extends Controller
 
         try {
 
-        	$response = (new icebreakerService)->fullcontact($request->get('email'));
+        	$response = (new icebreakerService)->getData($request->get('email'));
 
-	        if ($response['code'] != '200') {
+	        if ($response['fullcontact']['code'] != '200') {
 
-	            return response()->json(['error' => $response['obj']->message], $response['code']);
+	            return response()->json(['error' => "stuff wnt wrong"], 500);
 	        }
 	        
-	        return response()->json([$response['obj']], 200);
+	        return response()->json([$response], 200);
 
         } catch(\Exception $e) {
 
         	return response()->json(['error' => $e->getMessage()], 500);
         }
+
+    //     	try {
+
+    //     		$fullcontact = (new icebreakerService)->fullcontact($request->get('email'));
+
+				// $response['fullcontact'] = $fullcontact;
+
+				// $twitterExists = (new icebreakerService)->checkIfTwitterUrlGiven($fullcontact['obj']->socialProfiles);
+
+				// if($twitterExists) {
+
+				// 	$userName = $twitterExists->username;
+
+				// 	$twitterData = (new icebreakerService)->getTwitterDataFromUserName($userName);
+
+				// 	$response['twitter'] = $twitterData;
+				// }
+
+				// return response()->json([$response], 200);
+
+    //     	} catch(\Exception $e) {
+
+    //     		return response()->json(['error' => $e->getMessage()], 500);
+
+    //     	}
+        	
+
       	
+    }
+
+    public function testTwitterAuth()
+    {
+    	try {
+
+    		$response = (new icebreakerService)->testTwitter();
+	        
+	        return response()->json([$response['obj']], 200);
+
+    	} catch(\Exception $e) {
+
+    		return response()->json(['error' => $e->getMessage()], 500);
+    	}
     }
 }

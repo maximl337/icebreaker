@@ -5,6 +5,35 @@ namespace App\Services;
 class icebreakerService {
 
 
+	public function getData($email, $name = "")
+	{
+		try {
+
+			$fullcontact = $this->fullcontact($email);
+
+			$response['fullcontact'] = $fullcontact;
+
+			$twitterExists = $this->checkIfTwitterUrlGiven($fullcontact['obj']->socialProfiles);
+
+			if($twitterExists) {
+
+				$userName = $twitterExists->username;
+
+				$twitterData = $this->getTwitterDataFromUserName($userName);
+
+				$response['twitter'] = $twitterData;
+			}
+
+			return $response;
+
+		} catch(\Exception $e) {
+
+			throw $e;
+
+		}
+	}
+
+
 	public function fullcontact($email)
 	{
 		$_baseUri = 'https://api.fullcontact.com/';
@@ -43,28 +72,117 @@ class icebreakerService {
 
 	}
 
-	public function facebook()
+	public function checkIfTwitterUrlGiven(array $data)
 	{
-		# code...
+
+		foreach($data as $socialProfile) {
+			if($socialProfile->typeName == "Twitter") {
+
+				return $socialProfile;
+			}
+		}
+
+		return false;
 	}
 
-	public function twitter()
+	public function getTwitterBearerTokenObject()
 	{
-		# code...
+
+		try {
+
+			$key = urlencode(env('TWITTER_CONSUMER_KEY'));
+
+			$secret = urlencode(env('TWITTER_CONSUMER_SECRET'));
+
+			$authString = base64_encode($key . ":" . $secret);
+
+			$host = 'https://api.twitter.com';
+
+			$resource = '/oauth2/token';
+
+			$ch = curl_init($host.$resource);
+
+			curl_setopt_array($ch, [
+					CURLOPT_POST => true,
+					CURLOPT_RETURNTRANSFER => 1, 
+					CURLOPT_HTTPHEADER => [
+						'Authorization: Basic ' . $authString,
+						'Content-type: application/x-www-form-urlencoded;charset=UTF-8'
+					],
+					CURLOPT_POSTFIELDS => 'grant_type=client_credentials'	
+				]);
+
+			$response_json = curl_exec($ch);
+
+			$response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+	        $response_obj  = json_decode($response_json);
+
+			curl_close($ch);
+
+			return [
+	        		'obj' 	=> $response_obj,
+	        		'json' 	=> $response_json,
+	        		'code' 	=> $response_code
+	        	];
+
+		} catch(\Exception $e) {
+
+			throw $e;
+
+		}
+		
 	}
 
-	public function googleplus()
+	public function getTwitterDataFromUserName($userName)
 	{
-		# code...
-	}
+		try {
 
-	public function linkedIn()
-	{
-		# code...
-	}
+			$bearerTokenArray = $this->getTwitterBearerTokenObject();
 
-	public function googleCustomSearch()
-	{
-		# code...
+			$bearerTokenObject = $bearerTokenArray['obj'];
+			
+			if(empty($bearerTokenObject->access_token) || $bearerTokenObject->token_type != 'bearer') {
+				throw new Exception("Access token not given or token type invalid");
+			}
+
+			$bearerToken = $bearerTokenObject->access_token;
+
+			$params = [
+				'screen_name' => $userName
+			];
+
+			$url = 'https://api.twitter.com/1.1/users/lookup.json?' . http_build_query($params);
+
+			$ch = curl_init($url);
+
+			curl_setopt_array($ch, [
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_RETURNTRANSFER => 1, 
+					CURLOPT_HTTPHEADER => [
+						'Authorization: Bearer ' . $bearerToken
+					],
+				]);
+
+			$response_json = curl_exec($ch);
+
+			$response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+	        $response_obj  = json_decode($response_json);
+
+			curl_close($ch);
+
+			return [
+	        		'obj' 	=> $response_obj,
+	        		'json' 	=> $response_json,
+	        		'code' 	=> $response_code
+	        	];
+
+		} catch(\Exception $e) {
+
+			throw $e;
+
+		}
+		
 	}
 }

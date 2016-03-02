@@ -31,6 +31,22 @@
 				</form>
 
 			</section>
+
+			<section>
+
+				<div class="fullcontact" style="display: none;">
+				
+				<h3>FullContact Data</h3>
+				<pre></pre>
+
+				</div>
+
+				<div class="twitter" style="display: none;">
+				<h3>Twitter Data</h3>
+				<pre></pre>
+				</div>
+				
+			</section>
 			
 			
 
@@ -64,39 +80,21 @@
 
             	console.log(data);
 
-                // $(".results-wrapper").show();
-                // $(".results").html("");
+            	var data = data[0];
+
+                var fullcontactData = data.fullcontact.obj;
+
+                $(".fullcontact").show();
+
+                $(".fullcontact pre").text(JSON.stringify(fullcontactData, null, '\t'));
 
                 
-                // var resp = data.data;
+                if(data.hasOwnProperty("twitter")) {
+                	
+                	$(".twitter").show();
 
-                // console.log(resp);
-               
-                // showLikelihood(resp.likelihood);
-
-                // if(resp.contactInfo) {
-
-                //     showContactInfo(resp.contactInfo);
-
-                // } // contactInfo
-
-                // if(resp.photos) {
-
-                //     showPhotos(resp.photos);
-
-                // } // photos
-
-                // if(resp.organizations) {
-                //     showOrganizations(resp.organizations);
-                // } // organizations
-
-                // if(resp.socialProfiles) {
-                //     showSocialProfiles(resp.socialProfiles);
-                // } // socialProfiles
-
-                // if(resp.demographics) {
-                //     showDemographics(resp.demographics);
-                // }
+                	$(".twitter pre").text(JSON.stringify(data.twitter.obj[0], null, '\t'));
+                }
 
                 swal.close();
                 //swal("Did not find any records!", "Connection to API was succesful, but no users were returned.", "error");

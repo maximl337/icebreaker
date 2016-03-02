@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('oauth/callback', 'icebreakerController@oauthCallback');
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -31,4 +33,7 @@ Route::group(['middleware' => ['web']], function () {
    	Route::get('demo', 'PagesController@demo');
 
    	Route::post('fullcontact', 'icebreakerController@fullcontact');
+
+   	Route::get('oauth/twitter', 'icebreakerController@testTwitterAuth');
+   	
 });
