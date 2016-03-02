@@ -16,6 +16,20 @@
 		body {
 			padding-top: 70px;
 		}
+
+    nav {
+      /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#87e0fd+0,53cbf1+44,0689db+100 */
+      background: #87e0fd; /* Old browsers */
+      background: -moz-linear-gradient(left,  #87e0fd 0%, #53cbf1 44%, #0689db 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(left,  #87e0fd 0%,#53cbf1 44%,#0689db 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(to right,  #87e0fd 0%,#53cbf1 44%,#0689db 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', endColorstr='#0689db',GradientType=1 ); /* IE6-9 */
+
+    }
+
+    .navbar .navbar-header a.navbar-brand {
+      color: white;
+    }
     </style>
 
     @yield('head')
