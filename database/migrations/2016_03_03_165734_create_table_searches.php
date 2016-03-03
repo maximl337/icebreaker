@@ -17,7 +17,7 @@ class CreateTableSearches extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('location')->nullable();
-            $table->json('data');
+            $table->text('data');
             $table->timestamps();
         });
     }
