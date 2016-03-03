@@ -13,8 +13,15 @@
 
     <!-- Temp styles -->
     <style type="text/css">
-		body {
-			padding-top: 70px;
+
+    html, body {
+                height: 100%;
+            }
+
+    body {
+        font-weight: 100;
+        font-family: 'Lato';
+			 padding-top: 70px;
 		}
 
     nav {
@@ -29,6 +36,7 @@
 
     .navbar .navbar-header a.navbar-brand {
       color: white;
+      font-weight: bold;
     }
     </style>
 
@@ -45,7 +53,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">IceBreaker</a>
+          <a class="navbar-brand" href="/">Icebreaker</a>
         </div>
         <!-- <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">

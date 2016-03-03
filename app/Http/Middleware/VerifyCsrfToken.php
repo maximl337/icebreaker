@@ -14,6 +14,8 @@ class VerifyCsrfToken extends BaseVerifier
     protected $except = [
         'fullcontact',
         'demo',
-        'oauth/twitter'
+        'oauth/twitter',
+        'auth/linkedin',
+        'auth/linkedin/callback'
     ];
 }

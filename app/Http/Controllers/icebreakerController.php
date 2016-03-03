@@ -34,33 +34,6 @@ class icebreakerController extends Controller
 
         	return response()->json(['error' => $e->getMessage()], 500);
         }
-
-    //     	try {
-
-    //     		$fullcontact = (new icebreakerService)->fullcontact($request->get('email'));
-
-				// $response['fullcontact'] = $fullcontact;
-
-				// $twitterExists = (new icebreakerService)->checkIfTwitterUrlGiven($fullcontact['obj']->socialProfiles);
-
-				// if($twitterExists) {
-
-				// 	$userName = $twitterExists->username;
-
-				// 	$twitterData = (new icebreakerService)->getTwitterDataFromUserName($userName);
-
-				// 	$response['twitter'] = $twitterData;
-				// }
-
-				// return response()->json([$response], 200);
-
-    //     	} catch(\Exception $e) {
-
-    //     		return response()->json(['error' => $e->getMessage()], 500);
-
-    //     	}
-        	
-
       	
     }
 

@@ -35,5 +35,21 @@ Route::group(['middleware' => ['web']], function () {
    	Route::post('fullcontact', 'icebreakerController@fullcontact');
 
    	Route::get('oauth/twitter', 'icebreakerController@testTwitterAuth');
+
+	Route::get('authenticate', 'PagesController@authenticate');
+
+	Route::get('connect', 'PagesController@connect');
+
+	/**
+	 * oAuth
+	 */
+	
+	Route::get('auth/linkedin', 'Auth\AuthController@redirectToLinkedin');
+
+	Route::get('auth/linkedin/callback', 'Auth\AuthController@handleLinkedinCallback');
+
+	Route::get('auth/twitter', 'Auth\AuthController@redirectToTwitter');
+
+	Route::get('auth/twitter/callback', 'Auth\AuthController@handleTwitterCallback');
    	
 });

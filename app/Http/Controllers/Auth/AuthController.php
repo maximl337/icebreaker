@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Log;
+use Auth;
 use App\User;
+use Socialite;
 use Validator;
+use App\AccessToken;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -28,7 +32,7 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/connect';
 
     /**
      * Create a new authentication controller instance.
@@ -37,7 +41,9 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest', ['except' => 'logout']);
+        //$this->middleware('guest', ['except' => ['logout']]);
+
+        $this->middleware('auth', ['only' => ['redirectToTwitter']]);
     }
 
     /**
@@ -68,5 +74,109 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    /**
+     * [redirectToLinkedin description]
+     * @return [type] [description]
+     */
+    public function redirectToLinkedin()
+    {
+        return Socialite::driver('linkedin')->redirect();
+    }
+
+    /**
+     * [handleLinkedinCallback description]
+     * @return [type] [description]
+     */
+    public function handleLinkedinCallback()
+    {
+        $socialUser = Socialite::driver('linkedin')->user();
+
+        Log::info(['social user' => serialize($socialUser)]);
+
+        $user = $this->makeUser($socialUser, 'linkedin');
+        
+        return redirect('connect');
+    }
+
+    /**
+     * [redirectToTwitter description]
+     * @param  string $value [description]
+     * @return [type]        [description]
+     */
+    public function redirectToTwitter($value='')
+    {
+        return Socialite::driver('twitter')->redirect();
+    }
+
+    /**
+     * [handleTwitterCallback description]
+     * @return [type] [description]
+     */
+    public function handleTwitterCallback()
+    {
+        $socialUser = Socialite::driver('twitter')->user();
+
+        Log::info(['social user' => serialize($socialUser)]);
+
+        $access_token = Auth::user()->accessTokens()->where('provider', 'twitter')->latest()->first();
+
+        if(is_null($access_token)) {
+
+            $access_token = new AccessToken([
+                        'provider' => 'twitter',
+                        'provider_id' => $socialUser->getId(),
+                        'username'    => !empty($socialUser->getNickname()) ? $socialUser->getNickname() : null,
+                        'token'       => $socialUser->token,
+                        'token_secret' => !empty($socialUser->tokenSecret) ? $socialUser->tokenSecret : null
+                ]);
+
+            Auth::user()->accessTokens()->save($access_token);
+        }
+        
+        return redirect('connect');
+    }
+
+    /**
+     * [makeUser description]
+     * @param  [type] $userObject [description]
+     * @param  [type] $provider   [description]
+     * @return [type]             [description]
+     */
+    protected function makeUser($userObject, $provider)
+    {
+        $user = User::where('email', $userObject->email)->first();
+
+        if(is_null($user)) {
+
+            $user = User::create([
+                    'name' => $userObject->getName(),
+                    'provider' => $provider,
+                    'email'    => $userObject->getEmail(),
+                    'avatar'   => $userObject->getAvatar()
+                ]);
+
+        }
+
+        // check if access token exists
+        $access_token = AccessToken::where('provider', $provider)->latest()->first();
+
+        if(is_null($access_token)) {
+
+           $access_token = new AccessToken([
+                                'provider' => $provider,
+                                'provider_id' => $userObject->getId(),
+                                'username'    => !empty($userObject->getNickname()) ? $userObject->getNickname() : null,
+                                'token'       => $userObject->token,
+                                'token_secret' => !empty($userObject->tokenSecret) ? $userObject->tokenSecret : null
+                            ]);
+
+            $user->accessTokens()->save($access_token);
+
+        }
+
+        Auth::login($user);
+
     }
 }
