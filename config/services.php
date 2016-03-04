@@ -49,8 +49,16 @@ return [
         'redirect' => env('TWITTER_CALLBACK_URL'),
     ],
 
-    'google' => [
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CONSUMER_KEY'),
+        'client_secret' => env('FACEBOOK_CONSUMER_SECRET'),
+        'redirect' => env('FACEBOOK_CALLBACK_URL'),
+    ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CONSUMER_KEY'),
+        'client_secret' => env('GOOGLE_CONSUMER_SECRET'),
+        'redirect'      => env('GOOGLE_CALLBACK_URL'),
     ],
 
 ];

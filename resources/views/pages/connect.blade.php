@@ -99,7 +99,7 @@
 
                     @if(!is_null($user->facebook))
 
-                        <a href='#/auth/facebook' class="btn btn-default facebook  disabled"> <i class="fa fa-facebook modal-icons"></i> Connected Facebook </a>
+                        <a href='#/auth/facebook' class="btn btn-default facebook  disabled connected"> <i class="fa fa-facebook modal-icons"></i> Connected Facebook </a>
 
                     @else
 

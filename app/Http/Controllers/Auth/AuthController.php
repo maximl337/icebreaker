@@ -100,6 +100,22 @@ class AuthController extends Controller
         return redirect('connect');
     }
 
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleFacebookCallback()
+    {
+        $socialUser = Socialite::driver('facebook')->user();
+
+        Log::info(['social user' => serialize($socialUser)]);
+
+        $user = $this->makeUser($socialUser, 'facebook');
+        
+        return redirect('connect');
+    }
+
     /**
      * [redirectToTwitter description]
      * @param  string $value [description]

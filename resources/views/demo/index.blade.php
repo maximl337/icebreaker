@@ -1,5 +1,14 @@
 @extends('templates.main')
 
+@section('head')
+    
+    <style type="text/css">
+        body {
+            font-weight: 300;
+        }
+    </style>
+@stop
+
 @section('content')
 
 	<div class="row">
