@@ -4,5 +4,5 @@ namespace App\Contracts;
 
 interface Linkedin {
 
-	public function getPerson($id, $token);
+	public function getPerson($url, $token);
 }

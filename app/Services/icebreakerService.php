@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Auth;
+
 class icebreakerService {
 
 
@@ -19,9 +21,22 @@ class icebreakerService {
 
 				$userName = $twitterExists->username;
 
-				$twitterData = $this->getTwitterDataFromUserName($userName);
+				$response['twitter'] = $this->getTwitterDataFromUserName($userName);
 
-				$response['twitter'] = $twitterData;
+			}
+
+			$linkedinExists = $this->checkIfLinkedinUrlGiven($fullcontact['obj']->socialProfiles);
+
+			if($linkedinExists) {
+
+				$url = $linkedinExists->url;
+
+				$access_token = Auth::user()->accessTokens()->where('provider', 'linkedin')->latest()->first();
+
+				$token = $access_token->token;
+
+				$response['linkedin'] = (new \App\Services\LinkedinService)->getPerson($url, $token);
+
 			}
 
 			return $response;
@@ -77,6 +92,18 @@ class icebreakerService {
 
 		foreach($data as $socialProfile) {
 			if($socialProfile->typeName == "Twitter") {
+
+				return $socialProfile;
+			}
+		}
+
+		return false;
+	}
+
+	public function checkIfLinkedinUrlGiven(array $data)
+	{
+		foreach($data as $socialProfile) {
+			if($socialProfile->typeName == "LinkedIn") {
 
 				return $socialProfile;
 			}

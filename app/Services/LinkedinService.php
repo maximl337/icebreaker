@@ -8,32 +8,57 @@ class LinkedinService implements Linkedin {
 
 	public function getPerson($url, $token)
 	{
-		$url = 'https://api.linkedin.com/v1/people/url=' . $id;
 
-		$params = [
-			'format' => 'json'
-		];
+		try {
 
-		$ch = curl_init($url . http_build_query($params));
+			$url = 'https://api.linkedin.com/v1/people/url=' . urlencode($url);
 
-		curl_setopt_array($ch, [
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_HTTPHEADER => [
-						'Authorization: Bearer ' . $token
-					],
-			]);
+			$params = [
+				'format' => 'json'
+			];
 
-		$response_json = curl_exec($ch);
+			$ch = curl_init($url . '?' . http_build_query($params));
 
-        $response_obj  = json_decode($response_json);
+			curl_setopt_array($ch, [
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_HTTPHEADER => [
+							'Authorization: Bearer ' . $token
+						],
+				]);
 
-		curl_close($ch);
+			$response_json = curl_exec($ch);
 
-		// get correct id from return response
+	        $response_obj  = json_decode($response_json);
 
-		// make another curl call to https://api.linkedin.com/v1/people/id=<CORRECT ID GOES HERE>:(first-name,last-name,headline,interests,skills,educations,industry,positions)?format=json
+	        curl_close($ch);
 
-		// parse and return information
+	        if(empty($response_obj->id)) throw new Exception("Linkedin id not found");
+
+
+			$id = $response_obj->id;
+
+			$url2 = 'https://api.linkedin.com/v1/people/id='.$id.':(first-name,last-name,headline,industry,distance,num-connections,summary,specialties,picture-url,current-share,interests,skills,educations,courses,associations,positions)?';
+
+
+			$ch2 = curl_init($url2 . http_build_query($params));
+
+			curl_setopt_array($ch2, [
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_HTTPHEADER => [
+							'Authorization: Bearer ' . $token
+						],
+				]);
+
+			$response = json_decode(curl_exec($ch2));
+
+			return $response;
+
+		} catch(\Exception $e) {
+
+			throw $e;
+			
+		}
+		
 
 	}
 }

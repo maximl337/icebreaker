@@ -54,6 +54,13 @@
 				<h3>Twitter Data</h3>
 				<pre></pre>
 				</div>
+
+                <div class="linkedin" style="display: none;">
+                <h3>Linkedin Data</h3>
+                <pre></pre>
+                </div>
+
+
 				
 			</section>
 			
@@ -103,6 +110,13 @@
                 	$(".twitter").show();
 
                 	$(".twitter pre").text(JSON.stringify(data.twitter.obj[0], null, '\t'));
+                }
+
+                if(data.hasOwnProperty("linkedin")) {
+
+                    $(".linkedin").show();
+
+                    $(".linkedin pre").text(JSON.stringify(data.linkedin, null, '\t'));
                 }
 
                 swal.close();
