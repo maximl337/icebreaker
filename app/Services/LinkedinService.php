@@ -32,7 +32,9 @@ class LinkedinService implements Linkedin {
 
 	        curl_close($ch);
 
-	        if(empty($response_obj->id)) throw new Exception("Linkedin id not found");
+	        if(empty($response_obj->id)) {
+	        	return false;
+	        }
 
 
 			$id = $response_obj->id;

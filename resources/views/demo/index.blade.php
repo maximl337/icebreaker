@@ -60,6 +60,16 @@
                 <pre></pre>
                 </div>
 
+                <div class="googleplus" style="display: none;">
+                <h3>Google+ Data</h3>
+                <pre></pre>
+                </div>
+
+                <div class="websites" style="display: none;">
+                <h3>Websites Data</h3>
+                <pre></pre>
+                </div>
+
 
 				
 			</section>
@@ -117,6 +127,22 @@
                     $(".linkedin").show();
 
                     $(".linkedin pre").text(JSON.stringify(data.linkedin, null, '\t'));
+                }
+
+                if(data.hasOwnProperty("google")) {
+
+                    $(".googleplus").show();
+
+                    $(".googleplus pre").text(JSON.stringify(data.google, null, '\t'));
+
+                }
+
+                if(data.hasOwnProperty("websites")) {
+
+                    $(".websites").show();
+
+                    $(".websites pre").text(JSON.stringify(data.websites, null, '\t'));
+
                 }
 
                 swal.close();

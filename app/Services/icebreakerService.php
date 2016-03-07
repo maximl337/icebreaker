@@ -15,29 +15,88 @@ class icebreakerService {
 
 			$response['fullcontact'] = $fullcontact;
 
-			$twitterExists = $this->checkIfTwitterUrlGiven($fullcontact['obj']->socialProfiles);
+			if(!empty($fullcontact['obj']->socialProfiles)) {
+				
+				$twitterExists = $this->checkIfTwitterUrlGiven($fullcontact['obj']->socialProfiles);
+		
+				if($twitterExists) {
+		
+					$userName = $twitterExists->username;
+		
+					$response['twitter'] = $this->getTwitterDataFromUserName($userName);
+		
+				}
+		
+				$linkedinExists = $this->checkIfLinkedinUrlGiven($fullcontact['obj']->socialProfiles);
+		
+				if($linkedinExists) {
+		
+					$url = !empty($linkedinExists->url) ? $linkedinExists->url : null;
+					
+					if(!is_null($url)) {
 
-			if($twitterExists) {
+						$access_token = Auth::user()->accessTokens()->where('provider', 'linkedin')->latest()->first();
+		
+						$token = !empty($access_token->token) ? $access_token->token : null;
+			
+						if(!is_null($token)) {
 
-				$userName = $twitterExists->username;
+							$linkedinData = (new \App\Services\LinkedinService)->getPerson($url, $token);
 
-				$response['twitter'] = $this->getTwitterDataFromUserName($userName);
+							if($linkedinData) {
+								$response['linkedin'] = $linkedinData;
+							}	
+						}
+
+					} // $url exists
+	
+				}
+
+				$checkIfGooglePlusExists = $this->checkIfGooglePlusExists($fullcontact['obj']->socialProfiles);
+
+				if($checkIfGooglePlusExists) {
+
+					$googlePlusId = !empty($checkIfGooglePlusExists->id) ? $checkIfGooglePlusExists->id : null;
+
+					if(!is_null($googlePlusId)) {
+
+						$access_token = Auth::user()->accessTokens()->where('provider', 'google')->latest()->first();
+
+						$token = !empty($access_token->token) ? $access_token->token : null;
+			
+						if(!is_null($token)) {
+
+							$googleData = (new \App\Services\GooglePlusService)->getPerson($token, $googlePlusId);
+
+							if($googleData) {
+								$response['google'] = $googleData;
+							}	
+						}
+
+					} // $googlePlusId exists
+					
+				}
 
 			}
 
-			$linkedinExists = $this->checkIfLinkedinUrlGiven($fullcontact['obj']->socialProfiles);
+			// Website meta data
+			if(!empty($fullcontact['obj']->contactInfo->websites)) {
 
-			if($linkedinExists) {
+				$response['websites'] = [];
 
-				$url = $linkedinExists->url;
+				foreach($fullcontact['obj']->contactInfo->websites as $site) {
 
-				$access_token = Auth::user()->accessTokens()->where('provider', 'linkedin')->latest()->first();
+					if(!empty($site->url)) {
 
-				$token = $access_token->token;
+						$response['websites'][] = [
+							'url' => $site->url,
+							'meta-data' => get_meta_tags($site->url)
+						];
+					}
+					
+				}
 
-				$response['linkedin'] = (new \App\Services\LinkedinService)->getPerson($url, $token);
-
-			}
+			} 
 
 			return $response;
 
@@ -104,6 +163,18 @@ class icebreakerService {
 	{
 		foreach($data as $socialProfile) {
 			if($socialProfile->typeName == "LinkedIn") {
+
+				return $socialProfile;
+			}
+		}
+
+		return false;
+	}
+
+	public function checkIfGooglePlusExists(array $data)
+	{
+		foreach($data as $socialProfile) {
+			if($socialProfile->typeName == "GooglePlus") {
 
 				return $socialProfile;
 			}

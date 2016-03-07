@@ -72,7 +72,7 @@
             
             <div class="content">
                 <div class="title text-center">
-                    Get more information
+                    Authorize
                 </div>
 
                 <div class="subtitle text-center">
@@ -103,17 +103,17 @@
 
                     @else
 
-                        <a href='#/auth/facebook' class="btn btn-default facebook  disabled"> <i class="fa fa-facebook modal-icons"></i> Connect Facebook </a>
+                        <a href='/auth/facebook' class="btn btn-default facebook"> <i class="fa fa-facebook modal-icons"></i> Connect Facebook </a>
 
                     @endif
 
                     @if(!is_null($user->google))
 
-                        <a href='#/auth/google' class="btn btn-default google disabled"> <i class="fa fa-google-plus modal-icons"></i> Connected to Google </a>
+                        <a href='#/auth/google' class="btn btn-default google connected disabled"> <i class="fa fa-google-plus modal-icons"></i> Connected to Google </a>
 
                     @else
 
-                        <a href='#/auth/google' class="btn btn-default google disabled"> <i class="fa fa-google-plus modal-icons"></i> Connect Google </a>
+                        <a href='/auth/google' class="btn btn-default google"> <i class="fa fa-google-plus modal-icons"></i> Connect Google </a>
 
                     @endif
 

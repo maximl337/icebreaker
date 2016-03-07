@@ -48,7 +48,7 @@
                      <div class="social-buttons">
                             <a href='/auth/facebook' class="btn btn-default facebook"> <i class="fa fa-facebook modal-icons"></i> Sign In with Facebook </a>
 
-                            <a href='#/auth/google' class="btn btn-default google disabled"> <i class="fa fa-google-plus modal-icons"></i> Sign In with Google </a>
+                            <a href='/auth/google' class="btn btn-default google"> <i class="fa fa-google-plus modal-icons"></i> Sign In with Google </a>
                             <a href='/auth/linkedin' class="btn btn-default linkedin"> <i class="fa fa-linkedin modal-icons"></i> Sign In with Linkedin </a>
                     </div>
                     

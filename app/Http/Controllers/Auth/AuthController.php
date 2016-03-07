@@ -116,6 +116,22 @@ class AuthController extends Controller
         return redirect('connect');
     }
 
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        $socialUser = Socialite::driver('google')->user();
+
+        Log::info(['social user' => serialize($socialUser)]);
+
+        $user = $this->makeUser($socialUser, 'google');
+        
+        return redirect('connect');
+    }
+
     /**
      * [redirectToTwitter description]
      * @param  string $value [description]
