@@ -168,7 +168,10 @@
 
                 var fullcontactData = data.fullcontact.obj;
 
-                name = fullcontactData.contactInfo.fullName;
+                if(fullcontactData.contactInfo.hasOwnProperty('fullName')) {
+                    name = fullcontactData.contactInfo.fullName;    
+                }
+                
 
                 if(fullcontactData.hasOwnProperty("photos")) {
                     avatar = fullcontactData.photos[0].url;
