@@ -25,7 +25,7 @@ class icebreakerController extends Controller
 
 	        if ($response['fullcontact']['code'] != '200') {
 
-	            return response()->json(['error' => "stuff wnt wrong"], 500);
+	            return response()->json(['error' => "We were not able to get any information for the email your provided. This can happen due to a few reason: (i) The person you are searching for is not very active online, (ii) Our robots are revolting for better working conditions. Try another email to see if the error is consistent."], 500);
 	        }
 	        
 	        return response()->json([$response], 200);

@@ -90,7 +90,7 @@ class icebreakerService {
 
 						$response['websites'][] = [
 							'url' => $site->url,
-							'meta-data' => get_meta_tags($site->url)
+							//'meta-data' => get_meta_tags($site->url)
 						];
 					}
 					
