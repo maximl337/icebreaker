@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
 
     <!-- Temp styles -->
     <style type="text/css">
@@ -22,6 +23,7 @@
         font-weight: 100;
         font-family: 'Lato';
 			 padding-top: 70px;
+
 		}
 
     nav {

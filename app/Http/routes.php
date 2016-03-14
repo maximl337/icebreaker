@@ -36,6 +36,8 @@ Route::group(['middleware' => ['web']], function () {
 
    	Route::get('oauth/twitter', 'icebreakerController@testTwitterAuth');
 
+   	Route::get('login', 'PagesController@authenticate');
+
 	Route::get('authenticate', 'PagesController@authenticate');
 
 	Route::get('connect', 'PagesController@connect');

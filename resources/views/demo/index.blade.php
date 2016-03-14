@@ -6,6 +6,26 @@
         body {
             font-weight: 300;
         }
+        .display-none {
+            display: none;
+        }
+
+        .about h3 strong {
+            font-weight: 300;
+            line-height: 30px;
+        }
+
+        .info h3.header {
+            font-weight: 300;
+        }
+        .info > div {
+            margin-bottom: 25px;
+        }
+        .info .organizations p {
+            font-weight: 300;
+            font-size: 20px;
+            line-height: 25px;
+        }
     </style>
 @stop
 
@@ -41,7 +61,39 @@
 
 			</section>
 
-			<section>
+            <section class="info">
+
+                <div class="avatar display-none"></div>
+                
+                <div class="name display-none"></div>
+
+                <div class="about display-none"></div>
+
+                <div class="location display-none"></div>
+
+                <div class="organizations display-none">
+                    <h3 class="header"><em>Current positions</em></h3>
+                    <hr />
+                </div>
+
+                <div class="positions display-none">
+                    <h3 class="header"><em>Previous held positions</em></h3>
+                    <hr />
+                </div>
+    
+                <div class="education display-none"></div>
+
+                <div class="social-profiles display-none">
+                    <h3 class="header"><em>Social profiles</em></h3>
+                    <hr />
+                </div>
+
+                <div class="links display-none"></div>
+
+
+            </section>
+
+			<section style="display: none;">
 
 				<div class="fullcontact" style="display: none;">
 				
@@ -70,8 +122,6 @@
                 <pre></pre>
                 </div>
 
-
-				
 			</section>
 			
 			
@@ -104,32 +154,134 @@
             dataType: 'json',
             success: function(data) {
 
-            	console.log(data);
+            	//console.log(data);
+
+                var name = false, 
+                    avatar = false,
+                    organizations = [],
+                    location = false,
+                    about = false,
+                    oldPositions = [],
+                    socialProfiles = [];
 
             	var data = data[0];
 
                 var fullcontactData = data.fullcontact.obj;
 
+                name = fullcontactData.contactInfo.fullName;
+
+                if(fullcontactData.hasOwnProperty("photos")) {
+                    avatar = fullcontactData.photos[0].url;
+                }
+
+                if(fullcontactData.hasOwnProperty("organizations")) {
+                    $.each(fullcontactData.organizations, function(i, v) {
+                        if(v.isPrimary == true) {
+                            var r = {
+                                "name": v.name,
+                                "title": v.title,
+                                "industry": "",
+                                "summary": ""
+                            };
+
+                        } else if(v.isPrimary == false && v.current == false) {
+
+                            var d = {
+                                "name": v.name + "( " + v.startDate + " - " + v.endDate + " )",
+                                "title": v.title
+                            }
+                        }
+
+                        organizations.push(r);
+
+                        oldPositions.push(d);
+                    });
+                }
+
+                if(fullcontactData.hasOwnProperty("demographics")) {
+                    location = fullcontactData.demographics.locationGeneral;
+                }
+
+                if(fullcontactData.hasOwnProperty("socialProfiles")) {
+                    $.each(fullcontactData.socialProfiles, function(i, v) {
+                        if(v.hasOwnProperty("bio")) {
+                            about = v.bio;
+                        }
+
+                        var r = {
+                            "name": v.type,
+                            "url": v.url
+                        };
+
+                        socialProfiles.push(r);
+                    });
+                }
+
                 $(".fullcontact").show();
 
                 $(".fullcontact pre").text(JSON.stringify(fullcontactData, null, '\t'));
 
-                
+                // TWITTER
                 if(data.hasOwnProperty("twitter")) {
-                	
+
+                    name = name ? name : data.twitter.obj[0].name;
+                    
+                    avatar = avatar ? avatar : data.twitter.obj[0].profile_image_url;
+
+                    location = location ? location : data.twitter.obj[0].location;
+
                 	$(".twitter").show();
 
                 	$(".twitter pre").text(JSON.stringify(data.twitter.obj[0], null, '\t'));
                 }
 
+                // LINKEDIN
                 if(data.hasOwnProperty("linkedin")) {
+
+                    name = data.linkedin.firstName + " " + data.linkedin.lastName;
+
+                    avatar = data.linkedin.pictureUrl;
+
+                    if(data.linkedin.hasOwnProperty("positions")) {
+
+                        console.log('has positions');
+                        if(data.linkedin.positions._total > 0) {
+
+                            console.log('has positions');
+                            organizations = [];
+
+                            $.each(data.linkedin.positions.values, function(i,v) {
+                                if(v.isCurrent) {
+                                    var r = {
+                                        "name": v.company.name,
+                                        "title": v.title,
+                                        "industry": v.company.industry,
+                                        "about": v.summary
+                                    }
+                                }
+
+                                organizations.push(r);
+                            });
+                        }
+                    } // organizations
+
+                    if(!about) {
+                        about = data.linkedin.summary
+                    } else {
+                        about += " <br /> " + data.linkedin.summary;
+                    }
 
                     $(".linkedin").show();
 
                     $(".linkedin pre").text(JSON.stringify(data.linkedin, null, '\t'));
                 }
 
+                // GOOGLE
                 if(data.hasOwnProperty("google")) {
+
+                    name = name ? name : data.google.name.givenName + data.google.name.familyName;         
+
+                    avatar = avatar ? avatar : data.google.image.url;           
 
                     $(".googleplus").show();
 
@@ -137,6 +289,7 @@
 
                 }
 
+                // WEBSITES
                 if(data.hasOwnProperty("websites")) {
 
                     $(".websites").show();
@@ -144,6 +297,18 @@
                     $(".websites pre").text(JSON.stringify(data.websites, null, '\t'));
 
                 }
+
+                if(name) showName(name);
+
+                if(organizations.length > 0) showOrganizations(organizations);
+
+                if(avatar) showAvatar(avatar);
+
+                if(about) showAbout(about);
+
+                if(oldPositions.length > 0) showOldPositions(oldPositions);
+
+                if(socialProfiles.length > 0) showSocialProfiles(socialProfiles);
 
                 swal.close();
                 //swal("Did not find any records!", "Connection to API was succesful, but no users were returned.", "error");
@@ -160,6 +325,90 @@
 
     });
 
+    function showName (name) {
+        $(".name").show().html('<h2>' + name + '</h2>');
+    }
+
+    function showAvatar (avatar) {
+        $(".avatar").show().html('<img src="' + avatar + '" />');
+    }
+
+    function showOrganizations (organizations) {
+
+        $(".organizations").show();
+       
+        $.each(organizations, function(i, v) {
+            var i = '<div class="company">'
+            i += '<h2>' + v.name + '<h2>';
+            i += '<h3><em>' + v.title + '</em><h3>';
+            i += '<h4>Industry: ' + v.industry + '<h4>';
+            i += '<p>' + v.about + '</p>';
+            i += '<div><hr />';
+
+            $(".organizations").append(i);
+        });
+
+    }
+
+    function showAbout (about) {
+        $(".about").show().html('<h3><strong>' + about + '</strong></h3>');
+    }
+
+    function oldPositions (oldPositions) {
+
+        $(".oldPositions").show();
+
+        $.each(oldPositions, function(i, v) {
+
+            if(v == undefined) return true;
+
+            var i = '<div class="company">';
+            i += '<h2>' + v.name + '<h2>';
+            i += '<h3><em>' + v.title + '</em><h3>';
+            i += '<div>';
+
+            $(".oldPositions").append(i);
+        });
+
+    }
+
+    function showSocialProfiles (socialProfiles) {
+
+        $(".social-profiles").show();
+
+        $.each(socialProfiles, function(i, v) {
+           var i = '<div class="socialProfile"';
+           i += '<h4>' + v.name + ':';
+           i += '<a href="' + v.url + '">' + v.url + '</a></h4>'
+           i += '</div>';
+
+            $(".social-profiles").append(i);
+        });
+
+    }
+
+    function showOldPositions (oldPositions) {
+        
+        $(".positions").show();
+
+        $.each(oldPositions, function(i, v) {
+            if(v == undefined) return true;
+            var i = '<div class="oldPosition">';
+            i += '<p><h4>' + v.name + '<h4>';
+            if(v.title != undefined) {
+                i += '<em>' + v.title + '</em></p>';    
+            }
+            
+            i += '</div>';
+
+            $(".positions").append(i);
+        });
+
+    }
+
+    function showLocation (location) {
+        $(".location").show().html('<h3>' + location + '</h3>');
+    }
 
     // function showLikelihood (likelihood) {
     //     var content = '<div class="row">';
