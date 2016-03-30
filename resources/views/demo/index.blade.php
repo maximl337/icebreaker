@@ -341,12 +341,18 @@
         $(".organizations").show();
        
         $.each(organizations, function(i, v) {
-            var i = '<div class="company">'
-            i += '<h2>' + v.name + '<h2>';
-            i += '<h3><em>' + v.title + '</em><h3>';
-            i += '<h4>Industry: ' + v.industry + '<h4>';
-            i += '<p>' + v.about + '</p>';
-            i += '<div><hr />';
+            
+                if(v == undefined) return true;
+
+                var i = '<div class="company">'
+                i += '<h2>' + v.name + '<h2>';
+                i += '<h3><em>' + v.title + '</em><h3>';
+                i += '<h4>Industry: ' + v.industry + '<h4>';
+                i += '<p>' + v.about + '</p>';
+                i += '<div><hr />';
+
+            
+            
 
             $(".organizations").append(i);
         });
@@ -380,6 +386,8 @@
         $(".social-profiles").show();
 
         $.each(socialProfiles, function(i, v) {
+
+            if(v == undefined) return true;
            var i = '<div class="socialProfile"';
            i += '<h4>' + v.name + ':';
            i += '<a href="' + v.url + '">' + v.url + '</a></h4>'
